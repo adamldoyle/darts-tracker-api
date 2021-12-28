@@ -1,7 +1,6 @@
 import handler from '../../libs/handler-lib';
 
 export const list = handler(async (event, context) => {
-  
   return event.requestContext;
 });
 
