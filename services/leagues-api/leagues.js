@@ -8,8 +8,6 @@ export const list = handler(async (event, context) => {
   const userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1];
   console.log('config', config);
   console.log('userSub', userSub);
-  console.log('region', region);
-  console.log('userPoolId', userPoolId);
   const request = {
     UserPoolId: config.userPoolId,
     Filter: `sub = "${userSub}"`,
