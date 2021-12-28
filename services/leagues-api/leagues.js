@@ -1,16 +1,17 @@
 import handler from '../../libs/handler-lib';
-import { region, userPoolId } from '../../config';
+import * as config from '../../config';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 
-const cognitoClient = new CognitoIdentityServiceProvider({ region });
+const cognitoClient = new CognitoIdentityServiceProvider({ region: config.region });
 
 export const list = handler(async (event, context) => {
   const userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1];
+  console.log('config', config);
   console.log('userSub', userSub);
   console.log('region', region);
   console.log('userPoolId', userPoolId);
   const request = {
-    UserPoolId: userPoolId,
+    UserPoolId: config.userPoolId,
     Filter: `sub = "${userSub}"`,
     Limit: 1,
   };
