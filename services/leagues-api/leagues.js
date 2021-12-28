@@ -5,7 +5,7 @@ import { CognitoIdentityServiceProvider } from 'aws-sdk';
 const cognitoClient = new CognitoIdentityServiceProvider({ region });
 
 export const list = handler(async (event, context) => {
-  const userSub = event.requestContext.identity.cognitoAuthenticationProvider?.split(':CognitoSignIn:')?.[1] ?? '';
+  const userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1];
   const request = {
     UserPoolId: userPoolId,
     Filter: `sub = "${userSub}"`,
