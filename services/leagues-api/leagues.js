@@ -7,6 +7,8 @@ const cognitoClient = new CognitoIdentityServiceProvider({ region });
 export const list = handler(async (event, context) => {
   const userSub = event.requestContext.identity.cognitoAuthenticationProvider.split(':CognitoSignIn:')[1];
   console.log('userSub', userSub);
+  console.log('region', region);
+  console.log('userPoolId', userPoolId);
   const request = {
     UserPoolId: userPoolId,
     Filter: `sub = "${userSub}"`,
