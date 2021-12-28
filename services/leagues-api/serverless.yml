@@ -1,0 +1,97 @@
+service: darts-tracker-api-leagues
+
+plugins:
+  - serverless-bundle
+  - serverless-offline
+
+custom: ${file(../../serverless.common.yml):custom}
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: dev
+  region: us-east-1
+  tracing:
+    apiGateway: true
+    lambda: true
+
+  # These environment variables are made available to our functions
+  # under process.env.
+  environment:
+    stage: ${self:custom.stage}
+    resourcesStage: ${self:custom.resourcesStage}
+
+  iamRoleStatements:
+    - ${file(../../serverless.common.yml):lambdaPolicyXRay}
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      # Restrict our IAM role permissions to
+      # the specific table for the stage
+      Resource:
+        - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeaguesTableArn
+        - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeagueMembershipTableArn
+
+functions:
+  listLeagues:
+    handler: leagues.list
+    events:
+      - http:
+          path: leagues
+          method: get
+          cors: true
+          authorizer: aws_iam
+  getLeagues:
+    handler: leagues.get
+    events:
+      - http:
+          path: leagues/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  createLeagues:
+    handler: leagues.create
+    events:
+      - http:
+          path: leagues
+          method: post
+          cors: true
+          authorizer: aws_iam
+  updateLeagueMembership:
+    handler: leagues.patchMembership
+    events:
+      - http:
+          path: leagues/{id}/membership
+          method: patch
+          cors: true
+          authorizer: aws_iam
+
+resources:
+  # API Gateway Errors
+  - ${file(resources/api-gateway-errors.yml)}
+  # Cognito Identity Pool Policy
+  - ${file(resources/cognito-policy.yml)}
+
+  - Outputs:
+      ApiGatewayRestApiId:
+        Value:
+          Ref: ApiGatewayRestApi
+        Export:
+          Name: ${self:custom.stage}-dt-ApiGatewayRestApiId
+
+      ApiGatewayRestApiRootResourceId:
+        Value:
+          Fn::GetAtt:
+            - ApiGatewayRestApi
+            - RootResourceId
+        Export:
+          Name: ${self:custom.stage}-dt-ApiGatewayRestApiRootResourceId
