@@ -18,12 +18,12 @@ export const list = handler(async (event, context) => {
 
   const leagueParams = {
     TableName: 'leagues',
-    KeyConditionExpression: 'league_key IN (:leagueKeys)',
+    FilterExpression: 'league_key IN (:leagueKeys)',
     ExpressionAttributeValues: {
       ':leagueKeys': leagueKeys,
     },
   };
-  const leaguesResult = await dynamoDb.query(leagueParams);
+  const leaguesResult = await dynamoDb.scan(leagueParams);
   return {
     membership: leaguesResult.Items,
   };
