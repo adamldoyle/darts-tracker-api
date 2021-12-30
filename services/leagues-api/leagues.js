@@ -13,6 +13,7 @@ export const list = handler(async (event, context) => {
       ':email': email,
     },
   };
+  console.log(JSON.stringify(membershipParams));
   const membershipResult = await dynamoDb.query(membershipParams);
   return {
     membership: membershipResult.Items,
