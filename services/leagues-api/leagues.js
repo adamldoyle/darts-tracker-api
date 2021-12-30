@@ -18,7 +18,7 @@ export const list = handler(async (event, context) => {
 
   const leagueParams = {
     TableName: 'leagues',
-    KeyConditionExpression: 'league_key IN :leagueKeys',
+    KeyConditionExpression: 'league_key IN (:leagueKeys)',
     ExpressionAttributeValues: {
       ':leagueKeys': leagueKeys,
     },
