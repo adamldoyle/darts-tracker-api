@@ -11,12 +11,21 @@ export const getContextUser = async (context) => {
     Limit: 1,
   };
   const response = await cognitoClient.listUsers(request).promise();
-  const user = response.Users?.[0] ?? undefined;
-  return user;
+  if (!response || !response.Users) {
+    return undefined;
+  }
+  return response.Users[0];
 }
 
 export const getUserAttribute = (user, attributeName) => {
-  return user?.Attributes.find((attribute) => attribute.Name === attributeName)?.Value ?? undefined;
+  if (!user || !user.Attributes) {
+    return undefined;
+  }
+  const attribute = user.Attributes.find((attribute) => attribute.Name === attributeName);
+  if (!attribute) {
+    return undefined;
+  }
+  return attribute.Value;
 }
 
 export const getContextAttribute = async (context, attributeName) => {
