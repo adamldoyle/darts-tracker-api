@@ -1,5 +1,6 @@
 import handler from '../../libs/handler-lib';
 import { getContextAttribute } from '../../libs/auth-lib';
+import dynamoDb from '../../libs/dynamodb-lib';
 
 export const list = handler(async (event, context) => {
   const email = getContextAttribute(event.requestContext, 'email');
