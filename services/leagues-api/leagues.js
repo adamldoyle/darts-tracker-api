@@ -1,5 +1,5 @@
 import handler from '../../libs/handler-lib';
-import * as config from '../../config';
+import config from '../../config';
 import { CognitoIdentityServiceProvider } from 'aws-sdk';
 
 const cognitoClient = new CognitoIdentityServiceProvider({ region: config.region });
