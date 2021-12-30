@@ -16,8 +16,8 @@ export const list = handler(async (event, context) => {
   const membershipResult = await dynamoDb.query(membershipParams);
   const leagueKeys = membershipResult.Items.map((item) => item.leagueKey);
 
-  const leagueParamMap = leagueKeys.reduce((acc, leagueKey) => {
-    acc[':' + leagueKey] = leagueKey;
+  const leagueParamMap = leagueKeys.reduce((acc, leagueKey, idx) => {
+    acc[':league' + idx] = leagueKey;
     return acc;
   }, {});
 
@@ -28,7 +28,7 @@ export const list = handler(async (event, context) => {
   };
   const leaguesResult = await dynamoDb.scan(leagueParams);
   return {
-    membership: leaguesResult.Items,
+    leagues: leaguesResult.Items,
   };
 });
 
