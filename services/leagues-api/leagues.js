@@ -38,9 +38,8 @@ export const get = handler(async (event, context) => {
 
   const leagueParams = {
     TableName: 'leagues',
-    KeyConditionExpression: 'leagueKey = :leagueKey',
-    ExpressionAttributeValues: {
-      ':leagueKey': leagueKey,
+    Key: {
+      'leagueKey': leagueKey,
     },
   };
   const leagueResult = await dynamoDb.get(leagueParams);
