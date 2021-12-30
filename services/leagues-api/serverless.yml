@@ -40,6 +40,10 @@ provider:
       Resource:
         - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeaguesTableArn
         - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeagueMembershipTableArn
+    - Effect: Allow
+      Action:
+        - cognito-idp:ListUsers
+      Resource: "*"
 
 functions:
   listLeagues:
