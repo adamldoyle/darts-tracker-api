@@ -56,7 +56,7 @@ functions:
     handler: leagues.get
     events:
       - http:
-          path: leagues/{id}
+          path: leagues/{leagueKey}
           method: get
           cors: true
           authorizer: aws_iam
@@ -72,7 +72,7 @@ functions:
     handler: leagues.patchMembership
     events:
       - http:
-          path: leagues/{id}/membership
+          path: leagues/{leagueKey}/membership
           method: patch
           cors: true
           authorizer: aws_iam

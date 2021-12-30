@@ -33,7 +33,40 @@ export const list = handler(async (event, context) => {
 });
 
 export const get = handler(async (event, context) => {
-  return {};
+  const email = await getContextAttribute(event.requestContext, 'email');
+  const leagueKey = event.pathParameters.leagueKey;
+
+  const leagueParams = {
+    TableName: 'leagues',
+    FilterExpression: 'leagueKey = :leagueKey',
+    ExpressionAttributeValues: {
+      ':leagueKey': leagueKey,
+    },
+  };
+  const leagueResult = await dynamoDb.get(leagueParams);
+  if (!leagueResult) {
+    throw new Error('Unknown league');
+  }
+  const league = leagueResult.Item;
+
+  const membershipParams = {
+    TableName: 'leaguemembership',
+    KeyConditionExpression: 'email = :email AND leagueKey = :leagueKey',
+    ExpressionAttributeValues: {
+      ':email': email,
+      ':leagueKey': league.leagueKey,
+    },
+  };
+  const membershipResult = await dynamoDb.query(membershipParams);
+
+  if (!membershipResult.Items.find((player) => player.email === email)) {
+    throw new Error('Unknown league');
+  }
+
+  return {
+    ...league,
+    membership: membershipResult.Items,
+  };
 });
 
 export const create = handler(async (event, context) => {
