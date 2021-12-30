@@ -14,8 +14,18 @@ export const list = handler(async (event, context) => {
     },
   };
   const membershipResult = await dynamoDb.query(membershipParams);
+  const leagueKeys = membershipResult.Items.map((item) => item.leagueKey);
+
+  const leagueParams = {
+    TableName: 'leagues',
+    KeyConditionExpression: 'league_key IN :leagueKeys',
+    ExpressionAttributeValues: {
+      ':leagueKeys': leagueKeys,
+    },
+  };
+  const leaguesResult = await dynamoDb.query(leagueParams);
   return {
-    membership: membershipResult.Items,
+    membership: leaguesResult.Items,
   };
 });
 
