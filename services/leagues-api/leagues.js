@@ -3,7 +3,19 @@ import { getContextAttribute } from '../../libs/auth-lib';
 
 export const list = handler(async (event, context) => {
   const email = getContextAttribute(event.requestContext, 'email');
-  return email;
+
+  const membershipParams = {
+    TableName: 'leaguemembership',
+    IndexName: 'emailIndex',
+    KeyConditionExpression: 'email = :email',
+    ExpressionAttributeValues: {
+      ':email': email,
+    },
+  };
+  const membershipResult = await dynamoDb.query(membershipParams);
+  return {
+    membership: membershipResult.Items,
+  };
 });
 
 export const get = handler(async (event, context) => {
