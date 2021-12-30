@@ -15,7 +15,7 @@ export const getContextUser = async (context) => {
     return undefined;
   }
   return response.Users[0];
-}
+};
 
 export const getUserAttribute = (user, attributeName) => {
   if (!user || !user.Attributes) {
@@ -26,9 +26,9 @@ export const getUserAttribute = (user, attributeName) => {
     return undefined;
   }
   return attribute.Value;
-}
+};
 
 export const getContextAttribute = async (context, attributeName) => {
   const user = await getContextUser(context);
   return getUserAttribute(user, attributeName);
-}
+};
