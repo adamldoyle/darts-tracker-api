@@ -16,12 +16,15 @@ export const list = handler(async (event, context) => {
   const membershipResult = await dynamoDb.query(membershipParams);
   const leagueKeys = membershipResult.Items.map((item) => item.leagueKey);
 
+  const leagueParamMap = leagueKeys.reduce((acc, leagueKey) => {
+    acc[':' + leagueKey] = leagueKey;
+    return acc;
+  }, {});
+
   const leagueParams = {
     TableName: 'leagues',
-    FilterExpression: 'league_key IN (:leagueKeys)',
-    ExpressionAttributeValues: {
-      ':leagueKeys': leagueKeys,
-    },
+    FilterExpression: 'league_key IN (' + Object.keys(leagueParamMap).join(', ') + ')',
+    ExpressionAttributeValues: leagueParamMap,
   };
   const leaguesResult = await dynamoDb.scan(leagueParams);
   return {
