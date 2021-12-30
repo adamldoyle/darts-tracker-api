@@ -23,7 +23,7 @@ export const list = handler(async (event, context) => {
 
   const leagueParams = {
     TableName: 'leagues',
-    FilterExpression: 'league_key IN (' + Object.keys(leagueParamMap).join(', ') + ')',
+    FilterExpression: 'leagueKey IN (' + Object.keys(leagueParamMap).join(', ') + ')',
     ExpressionAttributeValues: leagueParamMap,
   };
   const leaguesResult = await dynamoDb.scan(leagueParams);
