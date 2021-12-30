@@ -38,7 +38,7 @@ export const get = handler(async (event, context) => {
 
   const leagueParams = {
     TableName: 'leagues',
-    FilterExpression: 'leagueKey = :leagueKey',
+    KeyConditionExpression: 'leagueKey = :leagueKey',
     ExpressionAttributeValues: {
       ':leagueKey': leagueKey,
     },
