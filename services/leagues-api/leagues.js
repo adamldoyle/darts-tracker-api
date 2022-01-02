@@ -100,9 +100,8 @@ export const create = handler(async (event, context) => {
   }
   try {
     await getLeague(data.leagueKey);
-  } catch (err) {
     throw new Error(`leagueKey in use`);
-  }
+  } catch (err) {}
 
   const leagueParams = {
     TableName: 'leagues',
