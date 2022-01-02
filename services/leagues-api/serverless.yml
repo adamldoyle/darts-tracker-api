@@ -76,6 +76,14 @@ functions:
           method: patch
           cors: true
           authorizer: aws_iam
+  saveGame:
+    handler: leagues.saveGame
+    events:
+      - http:
+          path: leagues/{leagueKey}/game
+          method: post
+          cors: true
+          authorizer: aws_iam
 
 resources:
   # API Gateway Errors

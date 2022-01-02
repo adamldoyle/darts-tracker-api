@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import handler from '../../libs/handler-lib';
 import { getContextAttribute } from '../../libs/auth-lib';
 import dynamoDb from '../../libs/dynamodb-lib';
@@ -181,4 +182,26 @@ export const patchMembership = handler(async (event, context) => {
   );
 
   return {};
+});
+
+export const patchMembership = handler(async (event, context) => {
+  const email = await checkAuth(event);
+
+  const leagueKey = event.pathParameters.leagueKey;
+  const league = await getLeague(leagueKey, email);
+
+  const gameId = uuid();
+  const data = event.body;
+
+  const gameParams = {
+    TableName: 'games',
+    Item: {
+      leagueKey: league.leagueKey,
+      gameId,
+      data,
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    },
+  };
+  await dynamoDb.put(gameParams);
 });
