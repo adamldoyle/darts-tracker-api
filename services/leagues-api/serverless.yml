@@ -76,6 +76,14 @@ functions:
           method: patch
           cors: true
           authorizer: aws_iam
+  listGames:
+    handler: leagues.listGames
+    events:
+      - http:
+          path: leagues/{leagueKey}/games
+          method: get
+          cors: true
+          authorizer: aws_iam
   saveGame:
     handler: leagues.saveGame
     events:

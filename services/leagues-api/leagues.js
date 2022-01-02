@@ -205,3 +205,22 @@ export const saveGame = handler(async (event, context) => {
   };
   await dynamoDb.put(gameParams);
 });
+
+export const listGames = handler(async (event, context) => {
+  const email = await checkAuth(event);
+
+  const leagueKey = event.pathParameters.leagueKey;
+  const league = await getLeague(leagueKey, email);
+
+  const gameParams = {
+    TableName: 'games',
+    KeyConditionExpression: 'leagueKey = :leagueKey',
+    ExpressionAttributeValues: {
+      ':leagueKey': league.leagueKey,
+    },
+  };
+  const gamesResult = await dynamoDb.query(gameParams);
+  return {
+    games: gamesResult.Items,
+  };
+});
