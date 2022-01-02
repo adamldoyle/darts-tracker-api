@@ -145,7 +145,7 @@ export const patchMembership = handler(async (event, context) => {
     },
   };
   const membershipResult = await dynamoDb.query(membershipParams);
-  const membership = membershipResult.Items;
+  const membership = membershipResult.Items.map((item) => item.email);
 
   const data = JSON.parse(event.body);
   await Promise.all(
