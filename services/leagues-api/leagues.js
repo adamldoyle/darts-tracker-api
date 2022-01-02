@@ -10,7 +10,7 @@ const checkAuth = async (event) => {
   return email;
 };
 
-const getLeague = (leagueKey, email = undefined) => {
+const getLeague = async (leagueKey, email = undefined) => {
   const leagueParams = {
     TableName: 'leagues',
     Key: {
@@ -74,7 +74,7 @@ export const get = handler(async (event, context) => {
   const email = await checkAuth(event);
 
   const leagueKey = event.pathParameters.leagueKey;
-  const league = getLeague(leagueKey, email);
+  const league = await getLeague(leagueKey, email);
 
   const membershipParams = {
     TableName: 'leaguemembership',
@@ -98,7 +98,7 @@ export const create = handler(async (event, context) => {
   if (!data.leagueKey || !data.name) {
     throw new Error(`leagueKey and name required`);
   }
-  const league = getLeague(data.leagueKey);
+  const league = await getLeague(data.leagueKey);
   if (league) {
     throw new Error(`leagueKey in use`);
   }
@@ -132,7 +132,7 @@ export const patchMembership = handler(async (event, context) => {
   const email = await checkAuth(event);
 
   const leagueKey = event.pathParameters.leagueKey;
-  const league = getLeague(leagueKey, email);
+  const league = await getLeague(leagueKey, email);
 
   const membershipParams = {
     TableName: 'leaguemembership',
