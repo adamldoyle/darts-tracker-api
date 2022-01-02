@@ -98,8 +98,9 @@ export const create = handler(async (event, context) => {
   if (!data.leagueKey || !data.name) {
     throw new Error(`leagueKey and name required`);
   }
-  const league = await getLeague(data.leagueKey);
-  if (league) {
+  try {
+    await getLeague(data.leagueKey);
+  } catch (err) {
     throw new Error(`leagueKey in use`);
   }
 
