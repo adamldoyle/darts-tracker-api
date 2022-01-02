@@ -191,7 +191,7 @@ export const saveGame = handler(async (event, context) => {
   const league = await getLeague(leagueKey, email);
 
   const gameId = uuid();
-  const data = event.body;
+  const data = JSON.parse(event.body);
 
   const gameParams = {
     TableName: 'games',
