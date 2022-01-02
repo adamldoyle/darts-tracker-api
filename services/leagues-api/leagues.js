@@ -115,7 +115,7 @@ export const create = handler(async (event, context) => {
   await dynamoDb.put(leagueParams);
 
   const membershipParams = {
-    Tablename: 'leaguemembership',
+    TableName: 'leaguemembership',
     Item: {
       leagueKey: data.leagueKey,
       email: email,
