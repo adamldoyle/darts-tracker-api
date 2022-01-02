@@ -184,7 +184,7 @@ export const patchMembership = handler(async (event, context) => {
   return {};
 });
 
-export const patchMembership = handler(async (event, context) => {
+export const saveGame = handler(async (event, context) => {
   const email = await checkAuth(event);
 
   const leagueKey = event.pathParameters.leagueKey;
