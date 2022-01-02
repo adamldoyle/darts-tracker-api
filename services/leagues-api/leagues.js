@@ -92,7 +92,7 @@ export const get = handler(async (event, context) => {
 });
 
 export const create = handler(async (event, context) => {
-  const email = checkAuth(event);
+  const email = await checkAuth(event);
 
   const data = JSON.parse(event.body);
   if (!data.leagueKey || !data.name) {
