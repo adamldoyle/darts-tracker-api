@@ -8,6 +8,7 @@ const checkAuth = async (event) => {
   if (!email) {
     throw new Error('Not authenticated');
   }
+  console.log(`Authenticated user: ${email}`);
   return email;
 };
 
@@ -54,6 +55,12 @@ export const list = handler(async (event, context) => {
   };
   const membershipResult = await dynamoDb.query(membershipParams);
   const leagueKeys = membershipResult.Items.map((item) => item.leagueKey);
+
+  if (leagueKeys.length === 0) {
+    return {
+      leagues: [],
+    };
+  }
 
   const leagueParamMap = leagueKeys.reduce((acc, leagueKey, idx) => {
     acc[':league' + idx] = leagueKey;
