@@ -11,7 +11,7 @@ package:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   stage: dev
   region: us-east-1
   tracing:
@@ -37,9 +37,11 @@ provider:
         - dynamodb:DeleteItem
       # Restrict our IAM role permissions to
       # the specific table for the stage
-      Resource:
-        - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeaguesTableArn
-        - 'Fn::ImportValue': ${self:custom.resourcesStage}-dt-LeagueMembershipTableArn
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - cognito-idp:ListUsers
+      Resource: "*"
 
 functions:
   listLeagues:
@@ -54,7 +56,7 @@ functions:
     handler: leagues.get
     events:
       - http:
-          path: leagues/{id}
+          path: leagues/{leagueKey}
           method: get
           cors: true
           authorizer: aws_iam
@@ -70,8 +72,24 @@ functions:
     handler: leagues.patchMembership
     events:
       - http:
-          path: leagues/{id}/membership
+          path: leagues/{leagueKey}/membership
           method: patch
+          cors: true
+          authorizer: aws_iam
+  listGames:
+    handler: leagues.listGames
+    events:
+      - http:
+          path: leagues/{leagueKey}/games
+          method: get
+          cors: true
+          authorizer: aws_iam
+  saveGame:
+    handler: leagues.saveGame
+    events:
+      - http:
+          path: leagues/{leagueKey}/games
+          method: post
           cors: true
           authorizer: aws_iam
 
