@@ -8,7 +8,7 @@ const stageConfigs = {
   },
   prod: {
     region: 'us-east-1',
-    userPoolId: 'us-east-1_RZmCTlmyP',
+    userPoolId: 'us-east-1_z3s11jGuA',
   },
 };
 
