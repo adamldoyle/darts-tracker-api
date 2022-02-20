@@ -229,3 +229,26 @@ export const listGames = handler(async (event, context) => {
     games: gamesResult.Items,
   };
 });
+
+export const getGame = handler(async (event, context) => {
+  const email = await checkAuth(event);
+
+  const leagueKey = event.pathParameters.leagueKey;
+  await getLeague(leagueKey, email);
+  const gameId = event.pathParameters.gameId;
+
+  const gameParams = {
+    TableName: 'games',
+    Key: {
+      leagueKey,
+      gameId,
+    },
+  };
+  const gameResult = await dynamoDb.get(gameParams);
+  if (!gameResult || !gameResult.Item) {
+    throw new Error('Unknown game');
+  }
+  return {
+    game: gameResult.Item,
+  };
+});

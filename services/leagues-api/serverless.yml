@@ -92,6 +92,14 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
+  getGame:
+    handler: leagues.getGame
+    events:
+      - http:
+          path: leagues/{leagueKey}/games/{gameId}
+          method: get
+          cors: true
+          authorizer: aws_iam
 
 resources:
   # API Gateway Errors
