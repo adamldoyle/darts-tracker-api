@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import handler from '../../libs/handler-lib';
 import { getContextAttribute } from '../../libs/auth-lib';
 import dynamoDb from '../../libs/dynamodb-lib';
