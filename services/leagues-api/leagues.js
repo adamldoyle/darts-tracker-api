@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import handler from '../../libs/handler-lib';
 import { getContextAttribute } from '../../libs/auth-lib';
 import dynamoDb from '../../libs/dynamodb-lib';
@@ -197,7 +196,7 @@ export const saveGame = handler(async (event, context) => {
   const leagueKey = event.pathParameters.leagueKey;
   const league = await getLeague(leagueKey, email);
 
-  const gameId = uuid();
+  const gameId = event.pathParameters.gameId;
   const data = JSON.parse(event.body);
 
   const gameParams = {
@@ -206,7 +205,6 @@ export const saveGame = handler(async (event, context) => {
       leagueKey: league.leagueKey,
       gameId,
       data,
-      createdAt: Date.now(),
       updatedAt: Date.now(),
     },
   };
@@ -229,5 +227,28 @@ export const listGames = handler(async (event, context) => {
   const gamesResult = await dynamoDb.query(gameParams);
   return {
     games: gamesResult.Items,
+  };
+});
+
+export const getGame = handler(async (event, context) => {
+  const email = await checkAuth(event);
+
+  const leagueKey = event.pathParameters.leagueKey;
+  await getLeague(leagueKey, email);
+  const gameId = event.pathParameters.gameId;
+
+  const gameParams = {
+    TableName: 'games',
+    Key: {
+      leagueKey,
+      gameId,
+    },
+  };
+  const gameResult = await dynamoDb.get(gameParams);
+  if (!gameResult || !gameResult.Item) {
+    throw new Error('Unknown game');
+  }
+  return {
+    game: gameResult.Item,
   };
 });
