@@ -197,7 +197,7 @@ export const saveGame = handler(async (event, context) => {
   const leagueKey = event.pathParameters.leagueKey;
   const league = await getLeague(leagueKey, email);
 
-  const gameId = uuid();
+  const gameId = event.pathParameters.gameId;
   const data = JSON.parse(event.body);
 
   const gameParams = {
@@ -206,7 +206,6 @@ export const saveGame = handler(async (event, context) => {
       leagueKey: league.leagueKey,
       gameId,
       data,
-      createdAt: Date.now(),
       updatedAt: Date.now(),
     },
   };
