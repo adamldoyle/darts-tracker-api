@@ -88,8 +88,16 @@ functions:
     handler: leagues.saveGame
     events:
       - http:
-          path: leagues/{leagueKey}/games
-          method: post
+          path: leagues/{leagueKey}/games/{gameId}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  getGame:
+    handler: leagues.getGame
+    events:
+      - http:
+          path: leagues/{leagueKey}/games/{gameId}
+          method: get
           cors: true
           authorizer: aws_iam
 
