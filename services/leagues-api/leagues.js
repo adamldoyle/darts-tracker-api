@@ -157,40 +157,27 @@ export const patchMembership = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   await Promise.all(
     data
-      .filter((newPlayer) => !membership.includes(typeof newPlayer === 'string' ? newPlayer : newPlayer.email))
+      .filter((newPlayer) => !membership.includes(newPlayer.email))
       .map((newPlayer) => {
-        if (typeof newPlayer === 'string') {
-          const membershipParams = {
-            TableName: 'leaguemembership',
-            Item: {
-              leagueKey: league.leagueKey,
-              email: newPlayer,
-              createdAt: Date.now(),
-              updatedAt: Date.now(),
-            },
-          };
-          return dynamoDb.put(membershipParams);
-        } else {
-          //Given object IPlayer
-          const membershipParams = {
-            TableName: 'leaguemembership',
-            Item: {
-              leagueKey: league.leagueKey,
-              email: newPlayer.email,
-              colorCode: newPlayer.colorCode,
-              displayName: newPlayer.displayName,
-              createdAt: newPlayer.createdAt ?? Date.now(),
-              updatedAt: Date.now(),
-            },
-          };
-          return dynamoDb.put(membershipParams);
-        }
+        //Given object IPlayer
+        const membershipParams = {
+          TableName: 'leaguemembership',
+          Item: {
+            leagueKey: league.leagueKey,
+            email: newPlayer.email,
+            colorCode: newPlayer.colorCode,
+            displayName: newPlayer.displayName,
+            createdAt: newPlayer.createdAt ? newPlayer.createdAt : Date.now(),
+            updatedAt: Date.now(),
+          },
+        };
+        return dynamoDb.put(membershipParams);
       }),
   );
 
   await Promise.all(
     membership
-      .filter((oldEmail) => !data.includes(typeof oldEmail === 'string' ? oldEmail : oldEmail.email) && (typeof oldEmail === 'string' ? oldEmail : oldEmail.email) !== email)
+      .filter((oldEmail) => !data.find((player) => oldEmail === player.email) && oldEmail !== email)
       .map((oldEmail) => {
         const membershipParams = {
           TableName: 'leaguemembership',
