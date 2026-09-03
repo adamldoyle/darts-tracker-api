@@ -179,7 +179,7 @@ export const patchMembership = handler(async (event, context) => {
               email: newPlayer.email,
               colorCode: newPlayer.colorCode,
               displayName: newPlayer.displayName,
-              createdAt: Date.now(),
+              createdAt: newPlayer.createdAt ?? Date.now(),
               updatedAt: Date.now(),
             },
           };
