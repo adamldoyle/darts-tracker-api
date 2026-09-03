@@ -157,18 +157,34 @@ export const patchMembership = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   await Promise.all(
     data
-      .filter((newEmail) => !membership.includes(newEmail))
-      .map((newEmail) => {
-        const membershipParams = {
-          TableName: 'leaguemembership',
-          Item: {
-            leagueKey: league.leagueKey,
-            email: newEmail,
-            createdAt: Date.now(),
-            updatedAt: Date.now(),
-          },
-        };
-        return dynamoDb.put(membershipParams);
+      .filter((newPlayer) => !membership.includes(typeof newPlayer === 'string' ? newPlayer : newPlayer.email))
+      .map((newPlayer) => {
+        if (typeof newPlayer === 'string') {
+          const membershipParams = {
+            TableName: 'leaguemembership',
+            Item: {
+              leagueKey: league.leagueKey,
+              email: newPlayer,
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+            },
+          };
+          return dynamoDb.put(membershipParams);
+        } else {
+          //Given object IPlayer
+          const membershipParams = {
+            TableName: 'leaguemembership',
+            Item: {
+              leagueKey: league.leagueKey,
+              email: newPlayer.email,
+              colorCode: newPlayer.colorCode,
+              displayName: newPlayer.displayName,
+              createdAt: Date.now(),
+              updatedAt: Date.now(),
+            },
+          };
+          return dynamoDb.put(membershipParams);
+        }
       }),
   );
 
