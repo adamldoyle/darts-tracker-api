@@ -157,7 +157,6 @@ export const patchMembership = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   await Promise.all(
     data
-      .filter((newPlayer) => !membership.includes(newPlayer.email))
       .map((newPlayer) => {
         //Given object IPlayer
         const membershipParams = {
