@@ -190,7 +190,7 @@ export const patchMembership = handler(async (event, context) => {
 
   await Promise.all(
     membership
-      .filter((oldEmail) => !data.includes(oldEmail) && oldEmail !== email)
+      .filter((oldEmail) => !data.includes(typeof oldEmail === 'string' ? oldEmail : oldEmail.email) && (typeof oldEmail === 'string' ? oldEmail : oldEmail.email) !== email)
       .map((oldEmail) => {
         const membershipParams = {
           TableName: 'leaguemembership',
