@@ -157,14 +157,16 @@ export const patchMembership = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   await Promise.all(
     data
-      .filter((newEmail) => !membership.includes(newEmail))
-      .map((newEmail) => {
+      .map((newPlayer) => {
+        //Given object IPlayer
         const membershipParams = {
           TableName: 'leaguemembership',
           Item: {
             leagueKey: league.leagueKey,
-            email: newEmail,
-            createdAt: Date.now(),
+            email: newPlayer.email,
+            colorCode: newPlayer.colorCode,
+            displayName: newPlayer.displayName,
+            createdAt: newPlayer.createdAt ? newPlayer.createdAt : Date.now(),
             updatedAt: Date.now(),
           },
         };
@@ -174,7 +176,7 @@ export const patchMembership = handler(async (event, context) => {
 
   await Promise.all(
     membership
-      .filter((oldEmail) => !data.includes(oldEmail) && oldEmail !== email)
+      .filter((oldEmail) => !data.find((player) => oldEmail === player.email) && oldEmail !== email)
       .map((oldEmail) => {
         const membershipParams = {
           TableName: 'leaguemembership',
